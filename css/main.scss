@@ -9,38 +9,77 @@ $COL1: #cdd;
 $COL2: #282828;
 
 //-----Style-----//
+@media screen and (min-width : 200px){
     body{
         background-color: $COL2;
         color: $COL1;
         font-size: 1em;
         font-family: $H1Font;
-
+    
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(2, 1fr);
         grid-template-rows: auto 1fr;
-
+    
         h1{
-            grid-column: 1 / 4;
-            grid-row: 1 span 1;
-
+            grid-column: 1 / 3;
+            grid-row: 1 / 2;
+    
             margin: .3em;
             font-size: 4em;
             text-align: center;
         }
-
+    
         #canvasGfx{
             grid-column: 1 / 3;
             grid-row: 2 / 3;
             
             border: 5px solid $COL1;
         }
+    
+        section{
+            grid-column: 1 / 3;
+            grid-row: 3 / 4;
+    
+            border: 5px solid $COL1;
+    
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+    
+            padding: 1em;
+    
+            input{
+                -webkit-appearance: none;
+                box-shadow: none; 
+                outline: none;
+                font-size: 2em;
+                background: #55f;
+                color: #ff5;
+                border: 3px solid #000;
+                padding: 10px 20px;
+            }
+            input::placeholder { color: #ff58; }
+        }
+    }
+}
 
+
+@media screen and (min-width : 1280px){
+
+    body{
+        grid-template-columns: repeat(3, 1fr);
+
+        h1{
+            grid-column: 1 / 4;
+        }
+
+        #canvasGfx{
+            grid-column: 1 / 3;
+        }
+        
         section{
             grid-column: 3 / 4;
             grid-row: 2 / 3;
-
-            border: 5px solid $COL1;
         }
     }
-
-
+}

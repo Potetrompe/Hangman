@@ -9,15 +9,15 @@ const ctx = canvasGfx.getContext("2d");
     canvasGfx.width     = (window.outerWidth - 50)  * dimention;
     canvasGfx.height    = window.outerHeight * dimention;
 
-    window.onresize = () => {
-        //? HUSK å tegn canvas på nytt hvis resize
-        canvasGfx.width     = (window.outerWidth  - 50)  * dimention;
-        canvasGfx.height    = window.outerHeight * dimention;
+    // window.onresize = () => {
+    //     //? HUSK å tegn canvas på nytt hvis resize
+    //     canvasGfx.width     = (window.outerWidth  - 50)  * dimention;
+    //     canvasGfx.height    = window.outerHeight * dimention;
 
-        for (i in objects){
-            objects[i].draw();
-        }
-    }
+    //     for (i in objects){
+    //         objects[i].draw();
+    //     }
+    // }
 }
 
 //? Psudo code:
@@ -30,6 +30,7 @@ const ctx = canvasGfx.getContext("2d");
     input fra spiller er et (kort) inntastingsfelt, og enter skal sende
     bokstaven (eller kanskje stringen) som sjekkes av javascripten.
     (spesial-effects ?)
+    ((STring manipulation!! always cap.lock))
 
     generere dashed underscore per antall bokstaver i ordet. 
 
@@ -48,11 +49,15 @@ const ctx = canvasGfx.getContext("2d");
 */
 }
 
+//* Import UI
+const userInput = document.getElementById("userInput");
+
 //* Globals
 const col1 = "#cdd";
 const col2 = "#f65";
 const objects = [];
 
+userInput.focus();
 
 class Figure {
     constructor(x, y, w, h, drawFromCenter, col, angle){
@@ -249,8 +254,135 @@ class Circle extends Figure {
     
 }
 
-//? Draw objects
+//? Draw objects / hangman
 for (i in objects){
     objects[i].draw();
 }
 
+class HangmanString {
+    constructor(x, y, w, h, stringArr){
+        this.w = w / 100 * canvasGfx.offsetWidth;
+        this.h = h / 100 * canvasGfx.offsetHeight;
+        this.x = x / 100 * canvasGfx.offsetWidth;
+        this.y = y / 100 * canvasGfx.offsetHeight;
+        this.string = stringArr;
+    };
+
+    drawUnderline(){
+
+        //* outline
+        ctx.strokeStyle = col1;
+        ctx.strokeRect(this.x, this.y, this.w, this.h);
+        //console.log(this.x, this.y, this.w, this.h);
+
+        let iw = this.w / this.string.length;
+        let ih = 5;//this.h;// / this.string.length;
+        let spacing = 10;
+
+        for(i in this.string){
+            ctx.fillStyle = col2; //"#" + (i * 100 + 100); -red gradient
+
+            let ix = this.x + i * (this.w / this.string.length);
+            
+
+            ctx.fillRect(
+                ix + spacing, 
+                this.y + this.h - ih, 
+                iw - 2*spacing, 
+                ih
+            );//ih);
+            //console.log(ix, this.y, iw, ih);
+        }
+    };
+
+    drawLetter(inputString){
+        //this.val; this.pos;
+        let char = 0;
+        let pos = 0;
+
+        for(char in inputString){
+            //console.log(char);
+
+            for(i in this.string){
+                //console.log(i);
+                let hit = false;
+
+                if(this.string[i] != inputString[char]){
+                    //no match - run draw-bodypart & add to wrong 
+                    //console.log("wrong!");
+                    //hit = false;
+
+                }else if(this.string[i] == inputString[char]){
+                    //match - draw char at right pos
+                    pos = this.string.indexOf(this.string[i]);
+                    //console.log("YUSS!!");
+                    console.log("Position: " + pos, this.string[i]);
+                    hit = true;
+                }
+
+                if(hit){
+                    ctx.font = `${this.w/ this.string.length - 30}px Arial`;
+                    ctx.fillStyle = col1;
+                    ctx.fillText(
+                        this.string[i], 
+                        this.x + pos * (this.w / this.string.length) + 20, 
+                        this.y + this.h - 20
+                    );
+                }
+
+            }
+        }
+        
+    };
+}
+
+
+const hangmanString = new HangmanString(
+        10, 
+        10, 
+        80, 
+        20, 
+        ["S", "U", "P", "E", "R"] //* to uppercase!!
+    );
+console.log(hangmanString);
+hangmanString.drawUnderline();
+// hangmanString.drawLetter(["r"]);
+
+
+
+
+window.addEventListener("keydown", (e) => {
+    if(
+        e.keyCode === 13 && 
+        userInput === document.activeElement && 
+        userInput.value != ""
+    ){
+        
+        let string = userInput.value;
+        let newString = new Array(string.length);
+        
+        for(i in string){
+            //* 65 - 122  => A - z
+            if(string.charCodeAt(i) >= 65 && string.charCodeAt(i) <= 122){
+                newString[i] = string[i];
+                //console.log("good!");
+            }else{
+                newString[i] = "X";
+                //console.log("bad!");
+            }
+        }
+        
+        for(i in newString){
+            newString[i] = newString[i].toUpperCase();
+        }        
+        
+        console.log(string, newString);
+
+        hangmanString.drawLetter(newString);
+        
+        
+        
+        userInput.value = "";
+
+    }
+});
