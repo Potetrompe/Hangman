@@ -1,0 +1,33 @@
+@import url(https://fonts.googleapis.com/css?family=Oswald|Montserrat:400,400i,700,700i&effect=anaglyph|fire-animation);
+body {
+  background-color: #282828;
+  color: #fff;
+  font-size: 1em;
+  font-family: "Roboto", sans-serif;
+  height: 100vh;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: start;
+}
+
+body h1 {
+  font-size: 4em;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  text-align: center;
+  margin: 0 1em;
+}
+
+body #canvasGfx {
+  margin-top: 2em;
+  border: 2px solid #fff;
+}
+/*# sourceMappingURL=main.css.map */

@@ -1,0 +1,42 @@
+//-----Fonts-----//
+@import url(https://fonts.googleapis.com/css?family=Oswald|Montserrat:400,400i,700,700i&effect=anaglyph|fire-animation);
+// class="font-effect-fire-animation" OR class="font-effect-anaglyph"
+$mainFont: 'Montserrat';
+$H1Font:   'Roboto', sans-serif;
+$altFont:  'Oswald';
+//-----Colors-----//
+$COL1: #fff;
+$COL2: #282828;
+
+//-----Style-----//
+    body{
+        background-color: $COL2;
+        color: $COL1;
+        font-size: 1em;
+        font-family: $H1Font;
+
+        height: 100vh;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+
+        h1{
+            font-size: 4em;
+            align-items: center;
+            // justify-content: center;
+            text-align: center;
+            margin: 0 1em;
+
+        }
+
+        #canvasGfx{
+            
+            margin-top: 2em;
+            
+            border: 2px solid #fff;
+            
+        }
+    }
+
+
