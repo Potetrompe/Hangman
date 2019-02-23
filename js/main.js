@@ -51,6 +51,8 @@ const ctx = canvasGfx.getContext("2d");
 
 //* Import UI
 const userInput = document.getElementById("userInput");
+const setWord = document.getElementById("setWord");
+const revealWord = document.getElementById("revealWord");
 
 //* Globals
 const col1 = "#cdd";
@@ -122,8 +124,8 @@ class Circle extends Figure {
     objects.push(
         new Circle(
             50,
-            170,
-            700,
+            152,
+            400,
             col1
         )
     );
@@ -265,7 +267,7 @@ class HangmanString {
         this.h = h / 100 * canvasGfx.offsetHeight;
         this.x = x / 100 * canvasGfx.offsetWidth;
         this.y = y / 100 * canvasGfx.offsetHeight;
-        this.string = stringArr;
+        this.hangStringArr = stringArr;
     };
 
     drawUnderline(){
@@ -275,14 +277,14 @@ class HangmanString {
         ctx.strokeRect(this.x, this.y, this.w, this.h);
         //console.log(this.x, this.y, this.w, this.h);
 
-        let iw = this.w / this.string.length;
-        let ih = 5;//this.h;// / this.string.length;
+        let iw = this.w / this.hangStringArr.length;
+        let ih = 5;//this.h;// / this.hangStringArr.length;
         let spacing = 10;
 
-        for(i in this.string){
+        for(i in this.hangStringArr){
             ctx.fillStyle = col2; //"#" + (i * 100 + 100); -red gradient
 
-            let ix = this.x + i * (this.w / this.string.length);
+            let ix = this.x + i * (this.w / this.hangStringArr.length);
             
 
             ctx.fillRect(
@@ -303,29 +305,29 @@ class HangmanString {
         for(char in inputString){
             //console.log(char);
 
-            for(i in this.string){
+            for(i in this.hangStringArr){
                 //console.log(i);
                 let hit = false;
 
-                if(this.string[i] != inputString[char]){
+                if(this.hangStringArr[i] != inputString[char]){
                     //no match - run draw-bodypart & add to wrong 
                     //console.log("wrong!");
                     //hit = false;
 
-                }else if(this.string[i] == inputString[char]){
+                }else if(this.hangStringArr[i] == inputString[char]){
                     //match - draw char at right pos
-                    pos = this.string.indexOf(this.string[i]);
+                    pos = this.hangStringArr.indexOf(this.hangStringArr[i]);
                     //console.log("YUSS!!");
-                    console.log("Position: " + pos, this.string[i]);
+                    console.log("Position: " + pos, this.hangStringArr[i]);
                     hit = true;
                 }
 
                 if(hit){
-                    ctx.font = `${this.w/ this.string.length - 30}px Arial`;
+                    ctx.font = `${this.w/ this.hangStringArr.length - 30}px Arial`;
                     ctx.fillStyle = col1;
                     ctx.fillText(
-                        this.string[i], 
-                        this.x + pos * (this.w / this.string.length) + 20, 
+                        this.hangStringArr[i], 
+                        this.x + pos * (this.w / this.hangStringArr.length) + 20, 
                         this.y + this.h - 20
                     );
                 }
@@ -336,19 +338,17 @@ class HangmanString {
     };
 }
 
-
-const hangmanString = new HangmanString(
-        10, 
-        10, 
-        80, 
-        20, 
-        ["S", "U", "P", "E", "R"] //* to uppercase!!
-    );
-console.log(hangmanString);
-hangmanString.drawUnderline();
-// hangmanString.drawLetter(["r"]);
-
-
+//| Dummy-string
+// const hangmanString = new HangmanString(
+//         10, 
+//         10, 
+//         80, 
+//         20, 
+//         ["S", "U", "P", "E", "R"] //* to uppercase!!
+//     );
+// console.log(hangmanString);
+// hangmanString.drawUnderline();
+// // hangmanString.drawLetter(["r"]);
 
 
 window.addEventListener("keydown", (e) => {
@@ -384,5 +384,51 @@ window.addEventListener("keydown", (e) => {
         
         userInput.value = "";
 
+    }else if(
+        e.keyCode === 13 &&
+        setWord === document.activeElement &&
+        setWord.value != ""
+    ){
+        let hangWord = setWord.value;
+        let hangString = "";
+        hangWord = hangWord.toUpperCase();
+        
+        hangWord = hangWord.split(" ");
+        hangWord.forEach(subString => {
+            hangString += subString;
+        });
+
+        hangWord = [];
+        // hangString.forEach( letter => {
+        //     hangWord += letter;
+        // });
+        for(i in hangString){
+            hangWord.push(hangString[i]);
+        }
+
+        
+        window.hangmanString = new HangmanString(
+            10, 
+            10, 
+            80, 
+            20, 
+            hangWord//["S", "U", "P", "E", "R"]
+        );
+        hangmanString.drawUnderline();
+        console.log(hangWord, hangString, hangmanString);
+        
+        setWord.value = "";
     }
 });
+
+revealWord.onclick = () => {
+    console.log(hangmanString.hangStringArr);
+    if(hangmanString.hangStringArr != []){
+        
+        let tempString = "";
+        hangmanString.hangStringArr.forEach(letter => {
+            tempString += letter;
+        });
+        revealWord.innerHTML = tempString;
+    }
+}
