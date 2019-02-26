@@ -4,20 +4,14 @@ const ctx = canvasGfx.getContext("2d");
 
 //? resize canvas on window resize
 {
-    const dimention = 2 / 3; //pga. grid 2/3 * 1fr
+    //  let windowW = window.outerWidth;
+    //  let windowH = window.outerHeight;
 
-    canvasGfx.width     = (window.outerWidth - 50)  * dimention;
-    canvasGfx.height    = window.outerHeight * dimention;
+    let canvW = 600;
+    let canvH = 400;
 
-    // window.onresize = () => {
-    //     //? HUSK å tegn canvas på nytt hvis resize
-    //     canvasGfx.width     = (window.outerWidth  - 50)  * dimention;
-    //     canvasGfx.height    = window.outerHeight * dimention;
-
-    //     for (i in objects){
-    //         objects[i].draw();
-    //     }
-    // }
+    canvasGfx.height = canvH;
+    canvasGfx.width  = canvW;
 }
 
 //? Psudo code:
@@ -32,7 +26,7 @@ const ctx = canvasGfx.getContext("2d");
     (spesial-effects ?)
     ((STring manipulation!! always cap.lock))
 
-    generere dashed underscore per antall bokstaver i ordet. 
+    generere dashed underscore per antall bokstaver i ordet.
 
     Hvis bokstaven (/stringen) er i ordet skal den komme opp på canvas.
     ellers skal en bit tegnes videre på hang-mannen.
@@ -58,31 +52,32 @@ const revealWord = document.getElementById("revealWord");
 const col1 = "#cdd";
 const col2 = "#f65";
 const objects = [];
+let objectsDrawn = 0;
 
-userInput.focus();
+setWord.focus();
 
 class Figure {
     constructor(x, y, w, h, drawFromCenter, col, angle){
-        this.w = w / 100 * canvasGfx.offsetWidth;
-        this.h = h / 100 * canvasGfx.offsetHeight;
+        this.w = w;
+        this.h = h;
+        this.x = x;
+        this.y = y;
         if(drawFromCenter){
-            this.x = x / 100 * canvasGfx.offsetWidth - this.w / 2;
-            this.y = y / 100 * canvasGfx.offsetHeight - this.h / 2;
-        }else if(!drawFromCenter){
-            this.x = x / 100 * canvasGfx.offsetWidth;
-            this.y = y / 100 * canvasGfx.offsetHeight;    
+            this.x += - this.w / 2;
+            this.y += - this.h / 2;
         }
         this.col = col;
-        if(angle){
-            this.angle = angle;
-        }
+        if(angle){this.angle = angle;}
     }
 
     draw(){
+
+        //* rotata canvas by angle
         if(this.angle){
-            this.horizontalCenter    = this.x;//this.x + this.w/2;
-            this.verticalCenter      = this.y;//this.y + this.h/2;
-            //console.log(this.horizontalCenter, this.verticalCenter, this.x, this.y);
+            this.horizontalCenter    = this.x;
+            this.verticalCenter      = this.y;
+            // console.log(this.horizontalCenter, this.verticalCenter, this.x, this.y);
+
             ctx.translate(this.horizontalCenter, this.verticalCenter);
             ctx.rotate(this.angle * Math.PI / 180);//(-Math.PI / 4); //| * Math.PI / 180
             ctx.translate(-this.horizontalCenter, -this.verticalCenter);
@@ -103,15 +98,11 @@ class Figure {
 class Circle extends Figure {
     constructor(x, y, radius, col){
         super(x, y, radius, radius, false, col);
-
-        let tommer = 
-        canvasGfx.offsetWidth * canvasGfx.offsetWidth + 
-        canvasGfx.offsetHeight * canvasGfx.offsetHeight;
-        this.radius = radius;// / 1000 * Math.sqrt(tommer); //canvasGfx.offsetWidth;//
+        this.radius = radius;
     }
 
     draw(){
-        ctx.fillStyle = this.col;  
+        ctx.fillStyle = this.col;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, true);
         ctx.fill();
@@ -123,8 +114,8 @@ class Circle extends Figure {
     //* hill
     objects.push(
         new Circle(
-            50,
-            152,
+            300,
+            700,
             400,
             col1
         )
@@ -132,33 +123,33 @@ class Circle extends Figure {
     //* main vertical pole
     objects.push(
         new Figure(
-            40, 
-            60, 
-            2, 
-            50,
-            true, 
+            230,
+            220,
+            15,
+            250,
+            true,
             col1
         )
     );
     //* main horizontal pole
     objects.push(
         new Figure(
-            60, 
-            36, 
-            40, 
-            2,
-            true, 
+            323,
+            100,
+            200,
+            15,
+            true,
             col1
         )
     );
     //* diagonal short pole
     objects.push(
         new Figure(
-            44, 
-            46, 
-            8, 
-            2,
-            true, 
+            250,
+            140,
+            50,
+            15,
+            true,
             col1,
             -45
         )
@@ -166,77 +157,77 @@ class Circle extends Figure {
     //* 2nd vertical pole
     objects.push(
         new Figure(
-            75, 
-            40, 
-            1, 
-            10,
-            true, 
+            400,
+            120,
+            7,
+            40,
+            true,
             col1
         )
     );
     //* n'eck
     objects.push(
         new Figure(
-            75, 
-            53, 
-            1, 
-            2,
-            true, 
+            400,
+            170,
+            5,
+            15,
+            true,
             col1
         )
     );
     //* head
     objects.push(
         new Circle(
-            75,
-            48,
-            35,
+            400,
+            150,
+            20,
             col2
         )
     );
     //* arm LEFT
     objects.push(
         new Figure(
-            74, 
-            58, 
-            4, 
-            1,
-            true, 
+            401,
+            198,
+            7,
+            50,
+            true,
             col1,
-            -45
+            30
         )
     );
     //* arm RIGHT
     objects.push(
         new Figure(
-            77.1, 
-            53, 
-            4, 
-            1,
-            true, 
+            401,
+            198,
+            7,
+            50,
+            true,
             col1,
-            45
+            -30
         )
     );
     //* Torso
     objects.push(
         new Figure(
-            75, 
-            59, 
-            2, 
-            10,
-            true, 
+            401,
+            200,
+            15,
+            40,
+            true,
             col1
         )
     );
     //* leg LEFT
     objects.push(
         new Figure(
-            74.7, 
-            65, 
-            1, 
-            8,
-            true, 
+            401,
+            230,
+            10,
+            40,
+            true,
             col1,
             20
         )
@@ -244,123 +235,152 @@ class Circle extends Figure {
     //* leg RIGHT
     objects.push(
         new Figure(
-            75.2, 
-            66, 
-            1, 
-            8,
-            true, 
+            401,
+            233,
+            10,
+            40,
+            true,
             col1,
             -20
         )
     );
-    
+
 }
 
-//? Draw objects / hangman
-for (i in objects){
-    objects[i].draw();
+//? Draw all objects / hangman
+const drawAll = () => {
+    for (i in objects){
+        objects[i].draw();
+    }
 }
+//drawAll();
+
+ctx.font = "100px Arial";
+ctx.fillStyle = "#354";
+ctx.fillText("Instructions", 50, 100);
 
 class HangmanString {
-    constructor(x, y, w, h, stringArr){
-        this.w = w / 100 * canvasGfx.offsetWidth;
-        this.h = h / 100 * canvasGfx.offsetHeight;
-        this.x = x / 100 * canvasGfx.offsetWidth;
-        this.y = y / 100 * canvasGfx.offsetHeight;
+    constructor(stringArr){
+        this.w = 500;
+        this.h = 50;
+        this.x = 50;
+        this.y = 30;
         this.hangStringArr = stringArr;
     };
 
     drawUnderline(){
+        //* Clear canvas
+        ctx.clearRect(0, 0, 1000, 1000);
 
         //* outline
         ctx.strokeStyle = col1;
         ctx.strokeRect(this.x, this.y, this.w, this.h);
-        //console.log(this.x, this.y, this.w, this.h);
 
         let iw = this.w / this.hangStringArr.length;
         let ih = 5;//this.h;// / this.hangStringArr.length;
-        let spacing = 10;
+        let spacing = 2 + 50 * Math.pow(Math.E, -this.hangStringArr.length);
+        spacing = Math.floor(spacing * 10) / 10;
 
         for(i in this.hangStringArr){
             ctx.fillStyle = col2; //"#" + (i * 100 + 100); -red gradient
 
             let ix = this.x + i * (this.w / this.hangStringArr.length);
-            
 
             ctx.fillRect(
-                ix + spacing, 
-                this.y + this.h - ih, 
-                iw - 2*spacing, 
+                ix + spacing,
+                this.y + this.h - ih,
+                iw - 2*spacing,
                 ih
-            );//ih);
-            //console.log(ix, this.y, iw, ih);
+            );
         }
     };
 
-    drawLetter(inputString){
-        //this.val; this.pos;
-        let char = 0;
-        let pos = 0;
+    drawLetter(inputArr){
 
-        for(char in inputString){
-            //console.log(char);
+        let hangString = "";
+        let inputString = "";
+        this.hangStringArr.forEach(char => hangString += char);
+        inputArr.forEach(char => inputString += char);
 
-            for(i in this.hangStringArr){
-                //console.log(i);
-                let hit = false;
+        if(inputArr.length > 1){
+            //| CHECK if input == hangstring
+            // console.log(inputString, hangString);
+            if(inputString == hangString){
+                console.log("du vant!");
+            }
 
-                if(this.hangStringArr[i] != inputString[char]){
-                    //no match - run draw-bodypart & add to wrong 
-                    //console.log("wrong!");
-                    //hit = false;
+        }else if(inputArr.length == 1){
+            //| for 1 char
 
-                }else if(this.hangStringArr[i] == inputString[char]){
-                    //match - draw char at right pos
-                    pos = this.hangStringArr.indexOf(this.hangStringArr[i]);
-                    //console.log("YUSS!!");
-                    console.log("Position: " + pos, this.hangStringArr[i]);
-                    hit = true;
-                }
+            let tempHangString = hangString;
+            //console.log(hangString.indexOf(inputArr));
+            let indexesOfCharInHangString = [];
 
-                if(hit){
-                    ctx.font = `${this.w/ this.hangStringArr.length - 30}px Arial`;
-                    ctx.fillStyle = col1;
-                    ctx.fillText(
-                        this.hangStringArr[i], 
-                        this.x + pos * (this.w / this.hangStringArr.length) + 20, 
-                        this.y + this.h - 20
-                    );
-                }
+
+            while(hangString.indexOf(inputArr) != -1 && i < 100){
+                
+                i++;
+                
+                indexesOfCharInHangString.push(hangString.indexOf(inputArr) + tempHangString.indexOf(hangString));
+
+                hangString = hangString.slice(hangString.indexOf(inputArr)+1, hangString.length);
+                //console.log(inputString, hangString, hangString.indexOf(inputString), hangString.length);
+                //console.log(tempHangString.indexOf(hangString), tempHangString, hangString);
 
             }
+            console.log(indexesOfCharInHangString);
+
+            if(indexesOfCharInHangString.length < 1){
+                //| No match, draw object
+                console.log("No match!");
+                objects[objectsDrawn].draw();
+                objectsDrawn++;
+            }else{
+                for(i in indexesOfCharInHangString){
+                    //console.log(this.hangStringArr[indexesOfCharInHangString[i]], this.x, this.y);
+                    ctx.font = "30px Arial"; //`${this.w/ this.hangStringArr.length - 30}px Arial`;
+                    ctx.fillStyle = col1;
+                    ctx.fillText(
+                        this.hangStringArr[indexesOfCharInHangString[i]],
+                        this.x 
+                            + indexesOfCharInHangString[i] 
+                            * (this.w / this.hangStringArr.length) 
+                            + (this.w / this.hangStringArr.length / 2) 
+                            - 10,
+                        this.y 
+                            + this.h 
+                            - 15
+                    );
+
+                    arrOfRightChars[indexesOfCharInHangString[i]] = this.hangStringArr[indexesOfCharInHangString[i]];
+                    // console.log(
+                    //     arrOfRightChars, 
+                    //     hangmanString.hangStringArr, 
+                    //     (String(arrOfRightChars) == String(hangmanString.hangStringArr)));
+                    
+                }
+                if(String(arrOfRightChars) == String(hangmanString.hangStringArr)){
+                    console.log("du vant!");
+                }
+            }
+
         }
         
-    };
-}
+    }
 
-//| Dummy-string
-// const hangmanString = new HangmanString(
-//         10, 
-//         10, 
-//         80, 
-//         20, 
-//         ["S", "U", "P", "E", "R"] //* to uppercase!!
-//     );
-// console.log(hangmanString);
-// hangmanString.drawUnderline();
-// // hangmanString.drawLetter(["r"]);
+};
 
 
 window.addEventListener("keydown", (e) => {
     if(
-        e.keyCode === 13 && 
-        userInput === document.activeElement && 
+        //* Guess
+        e.keyCode === 13 &&
+        userInput === document.activeElement &&
         userInput.value != ""
     ){
-        
         let string = userInput.value;
         let newString = new Array(string.length);
-        
+
         for(i in string){
             //* 65 - 122  => A - z
             if(string.charCodeAt(i) >= 65 && string.charCodeAt(i) <= 122){
@@ -371,20 +391,19 @@ window.addEventListener("keydown", (e) => {
                 //console.log("bad!");
             }
         }
-        
+
         for(i in newString){
             newString[i] = newString[i].toUpperCase();
-        }        
-        
-        console.log(string, newString);
+        }
+
+        //console.log(string, newString);
 
         hangmanString.drawLetter(newString);
-        
-        
-        
+
         userInput.value = "";
 
     }else if(
+        //* Set
         e.keyCode === 13 &&
         setWord === document.activeElement &&
         setWord.value != ""
@@ -392,7 +411,7 @@ window.addEventListener("keydown", (e) => {
         let hangWord = setWord.value;
         let hangString = "";
         hangWord = hangWord.toUpperCase();
-        
+
         hangWord = hangWord.split(" ");
         hangWord.forEach(subString => {
             hangString += subString;
@@ -406,25 +425,23 @@ window.addEventListener("keydown", (e) => {
             hangWord.push(hangString[i]);
         }
 
-        
+
         window.hangmanString = new HangmanString(
-            10, 
-            10, 
-            80, 
-            20, 
             hangWord//["S", "U", "P", "E", "R"]
         );
         hangmanString.drawUnderline();
-        console.log(hangWord, hangString, hangmanString);
-        
+        // console.log(hangWord, hangString, hangmanString);
+
+        window.arrOfRightChars = new Array(hangWord.length);
         setWord.value = "";
+        userInput.focus();
     }
 });
 
 revealWord.onclick = () => {
-    console.log(hangmanString.hangStringArr);
-    if(hangmanString.hangStringArr != []){
-        
+    //console.log(hangmanString.hangStringArr);
+    if(hangmanString.hangStringArr.length < 1){
+
         let tempString = "";
         hangmanString.hangStringArr.forEach(letter => {
             tempString += letter;
