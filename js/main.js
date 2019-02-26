@@ -16,30 +16,26 @@ const ctx = canvasGfx.getContext("2d");
 
 //? Psudo code:
 {/*
-    //* Beskrivelse
-    input-område. bruker/velger skal kunne skrive inn et ord (i passord felt)
-    eller trykke på en knapp som genererer et ord på valgt antall bokstaver.
-    (AKA: 1 player og fler-player)
+    lage klasser for delene av hangman-figuren
 
-    input fra spiller er et (kort) inntastingsfelt, og enter skal sende
-    bokstaven (eller kanskje stringen) som sjekkes av javascripten.
-    (spesial-effects ?)
-    ((STring manipulation!! always cap.lock))
+    push to array, draw 1 hver gang gjetter feil
 
-    generere dashed underscore per antall bokstaver i ordet.
+    klasse for å lage nye hang-ord-objekter
+    - holde strengen av bokstaver (hang-ordet)
+    - draw() function
+    - check if input is in hang-ord
+    - check for victory conditions etc.
 
-    Hvis bokstaven (/stringen) er i ordet skal den komme opp på canvas.
-    ellers skal en bit tegnes videre på hang-mannen.
+    håndtere input fra bruker u/submit-knapp (bruke enter)
+    - sette/skrive inn hang-word i passord format
 
-    implementasjon av vanskelighetsgrad er mulig, hvor mye skal tegnes
-    for en feil kan endres.
+    knapp for å se hang-word (fasit/reveal)
 
-    __________________
-    //* Hvordan skrive det, hvilken strategi? OOP / funksjonell
+    liste over gjettede bokstaver/ord
 
-    skal oppdateres hver gang canvas får nytt input. => oop?
+    antall forsøk igjen
 
-    arv kanskje??
+    slutt-skjerm (vant / tapte)
 */
 }
 
@@ -47,6 +43,8 @@ const ctx = canvasGfx.getContext("2d");
 const userInput = document.getElementById("userInput");
 const setWord = document.getElementById("setWord");
 const revealWord = document.getElementById("revealWord");
+const currentGuessesLeft = document.getElementById("currentGuessesLeft");
+const listOfGuessed = document.getElementById("listOfGuessed");
 
 //* Globals
 const col1 = "#cdd";
@@ -108,6 +106,19 @@ class Circle extends Figure {
         ctx.fill();
     }
 }
+
+const drawCurrentGuesses = guesses => {
+    currentGuessesLeft.innerHTML = `Chanses left: ${parseInt(guesses)}`;
+};
+
+const insertIntoListOfGuessed = guessed => {
+
+    let liNode = document.createElement("li");
+
+    liNode.innerHTML = String(guessed);
+
+    listOfGuessed.appendChild(liNode);
+};
 
 //? Create objects
 {
@@ -272,6 +283,13 @@ class HangmanString {
         //* Clear canvas
         ctx.clearRect(0, 0, 1000, 1000);
 
+        //* Reset chanses left
+        objectsDrawn = 0;
+        drawCurrentGuesses(objects.length - objectsDrawn);
+
+        //* Reset guessed list
+        listOfGuessed.innerHTML = "";
+
         //* outline
         ctx.strokeStyle = col1;
         ctx.strokeRect(this.x, this.y, this.w, this.h);
@@ -304,9 +322,11 @@ class HangmanString {
 
         if(inputArr.length > 1){
             //| CHECK if input == hangstring
-            // console.log(inputString, hangString);
+
             if(inputString == hangString){
-                console.log("du vant!");
+                console.log("Winner!");
+                alert("You Won!", "The word was :" + hangString);
+                drawAll();
             }
 
         }else if(inputArr.length == 1){
@@ -360,12 +380,19 @@ class HangmanString {
                     
                 }
                 if(String(arrOfRightChars) == String(hangmanString.hangStringArr)){
-                    console.log("du vant!");
+                    console.log("Winner!");
+                    alert("You Won!", "The word was :" + hangString);
+                    drawAll();
                 }
             }
 
         }
         
+        //* Update chances left
+        drawCurrentGuesses(objects.length - objectsDrawn);
+
+        //* Add to list of guessed
+        insertIntoListOfGuessed(inputString);
     }
 
 };

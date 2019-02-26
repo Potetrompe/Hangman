@@ -1,0 +1,21 @@
+
+lage klasser for delene av hangman-figuren
+
+push to array, draw 1 hver gang gjetter feil
+
+klasse for å lage nye hang-ord-objekter
+- holde strengen av bokstaver (hang-ordet)
+- draw() function
+  - check if input is in hang-ord
+  - check for victory conditions etc.
+
+håndtere input fra bruker u/submit-knapp (bruke enter)
+- sette/skrive inn hang-word i passord format
+
+knapp for å se hang-word (fasit/reveal)
+
+liste over gjettede bokstaver/ord
+
+antall forsøk igjen
+
+slutt-skjerm (vant / tapte)

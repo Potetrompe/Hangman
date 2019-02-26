@@ -12,14 +12,23 @@
     
     <canvas id="canvasGfx"></canvas>
 
-    <section>
+    <div id="guessesSection">
+
+        <h3 id="currentGuessesLeft"></h3>
+
+        <ul id="listOfGuessed">
+
+        </ul>
+    </div>
+
+    <div id="inputSection">
         <input id="userInput" type="text" placeholder="Type and press enter">
 
         <input id="setWord" type="password" placeholder="Set hangman-word">
 
         <button id="revealWord">Reveal Word</button>
         
-    </section>
+    </div>
 
     <script src="./js/main.js"></script>
 </body>
