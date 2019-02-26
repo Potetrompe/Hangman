@@ -266,10 +266,6 @@ const drawAll = () => {
 }
 //drawAll();
 
-ctx.font = "100px Arial";
-ctx.fillStyle = "#354";
-ctx.fillText("Instructions", 50, 100);
-
 class HangmanString {
     constructor(stringArr){
         this.w = 500;
