@@ -1,1 +1,3 @@
 # Hangman
+
+![](preview.PNG)
